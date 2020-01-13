@@ -1,11 +1,23 @@
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tiger implements Animals {
     int distance,time;
-    public Tiger() {
+    int count;
+    int totalTime ;
 
-        this.distance = 70 + new Random().nextInt(20);
-        this.time = 700 + new Random().nextInt(200);
+    public Tiger(int length,int count) {
+
+        this.distance = 70 + new Random().nextInt(5);
+        this.time = 700 + new Random().nextInt(50);
+        this.count = count;
+        int i =0,dis = 0,t=0;
+        do {
+            dis = dis+distance;
+            i++; t = time*i;
+        }while (dis<length);
+        this.totalTime = t;
+
     }
 
 
@@ -17,16 +29,42 @@ public class Tiger implements Animals {
         return time;
     }
 
+    public int getCount() {
+        return count;
+    }
 
     @Override
-    public int go(int length) {
-        int i =0;
-        int dis = 0;
+    public void go(int length) {
+        System.out.println("Hổ "+ count + " bắt đầu chạy " );
+        int i =0,dis = 0,t=0;
         do {
-            dis = dis +distance;
+            dis = dis+distance;
             i++;
+            System.out.println("Hổ "+ count + " chạy được " + dis+ " cm");
+            t = time*i;
         }while (dis<length);
-        return time*i;
+        totalTime = t;
+
+        System.out.println("Hổ "+count+" hoàn thành đường đua với thời gian " + this.getTotal()/1000 + " giây.");
+
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public int getTotal() {
+        return this.totalTime;
+    }
+
+    @Override
+    public String getType() {
+        return "Hổ";
     }
 }
 

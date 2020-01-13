@@ -1,18 +1,18 @@
 public class FactoryAnimal {
-public static Animals createAnimals(String s){
+public static Animals createAnimals(String s,int length,int count){
         Animals animals = null;
         switch (s){
-            case "Tiger":
-                animals = new Tiger();
+            case "Hổ":
+                animals = new Tiger(length,count);
                 break;
-            case "Rabbit":
-                animals = new Rabbit();
+            case "Thỏ":
+                animals = new Rabbit(length,count);
                 break;
-            case "Ostrich":
-                animals = new Ostrich();
+            case "Đà điểu":
+                animals = new Ostrich(length,count);
                 break;
-            case "Penguin":
-                animals = new Penguin();
+            case "Cánh cụt":
+                animals = new Penguin(length,count);
                 break;
         }
 return animals;

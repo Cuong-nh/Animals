@@ -1,43 +1,63 @@
+
 import java.util.*;
+import java.util.concurrent.*;
+
 
 public class Main {
-    public static void main(String[] args) {
-        List<List<Animals>> animalslist = new ArrayList<>();
-        String[] strings = {"Penguin", "Rabbit", "Ostrich", "Tiger"};
-        // tạo 4 list, mỗi list gồm 4 con cùng loài để add vào animalslist
-        for (String s : strings) {
-            List<Animals> list = new ArrayList<>();
-            for (int i = 0; i <4; i++) {
-                list.add(new FactoryAnimal().createAnimals(s));
+    public static final int NUMBER = 3, LENGTH = 5000;
 
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        List<Animals> animalslist = new ArrayList<>();
+        String[] strings = {"Cánh cụt", "Thỏ", "Đà điểu", "Hổ"};
+        // tạo list animals gồm 12 con, mỗi loài 3 con
+        for (String s : strings) {
+            for (int i = 0; i < NUMBER; i++) {
+                Animals animals = FactoryAnimal.createAnimals(s, LENGTH, i + 1);
+                animalslist.add(animals);
             }
-            animalslist.add(list);
         }
-        // Khởi tạo đường đua với 3 tham sô : list , chiều dài đường đua , số lượng mỗi loài
-        RaceBuilder raceBuilder = new RaceConcreteBuilder().setListAnimal(animalslist).setLength(1000).setNumber(4);
+        // Khởi tạo đường đua với 3 tham số : list , chiều dài đường đua , số lượng mỗi loài
+        RaceBuilder raceBuilder = new RaceConcreteBuilder().setListAnimal(animalslist).setLength(LENGTH).setNumber(NUMBER);
         Race race = raceBuilder.build();
 
-        // tạo 4 luồng chạy tương ứng với mỗi loài, mỗi luồng tính ra tổng thời gian hoàn thành của 4 con
-        for (int i = 0; i < 4; i++) {
-            int finalI = i;
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    List<Animals> list = animalslist.get(finalI);
-                    int totalTime = 0;
-                    for (int i = 0; i < list.size(); i++) {
-                        Animals animals = list.get(i);
-                        totalTime = totalTime + animals.go(race.getLength());
-
-
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        Map<String, LinkedList<Runnable>> mapAnimals = new HashMap<>();
+        for (int i = 0; i < animalslist.size(); i++) {
+            Animals animals = animalslist.get(i);
+            if (!mapAnimals.containsKey(animals.getType())) {
+                LinkedList<Runnable> linkedList = new LinkedList<Runnable>();
+                linkedList.add(new Runnable() {
+                    @Override
+                    public void run() {
+                        animals.go(race.getLength());
                     }
-                    System.out.println(strings[finalI] + " "+ totalTime);
-                }
-            });
-            thread.start();
+                });
+                mapAnimals.put(animals.getType(), linkedList);
+            } else {
+                mapAnimals.get(animals.getType()).add(new Runnable() {
+                    @Override
+                    public void run() {
+                        animals.go(race.getLength());
+                    }
+                });
+            }
+
         }
-
-
+        for (int i = 0; i < 3; i++) {
+            for (String s : mapAnimals.keySet()) {
+                LinkedList<Runnable> linkedList = mapAnimals.get(s);
+                executorService.execute(linkedList.get(i));
+            }
+        }
+        executorService.shutdown();
     }
 
 }
+
+
+
+
+
+
+
+

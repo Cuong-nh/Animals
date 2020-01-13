@@ -1,13 +1,13 @@
 import java.util.List;
 
 public class RaceConcreteBuilder implements RaceBuilder {
-    private List<List<Animals>> animalsList;
+    private List<Animals> animalsList;
     private int number;
     private int length;
 
 
     @Override
-    public RaceBuilder setListAnimal(List<List<Animals>> animalsList) {
+    public RaceBuilder setListAnimal(List<Animals> animalsList) {
         this.animalsList = animalsList;
         return this;
     }
