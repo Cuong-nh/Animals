@@ -20,7 +20,7 @@ public class Main {
         RaceBuilder raceBuilder = new RaceConcreteBuilder().setListAnimal(animalslist).setLength(LENGTH).setNumber(NUMBER);
         Race race = raceBuilder.build();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
         Map<String, LinkedList<Animals>> mapAnimals = new HashMap<>();
         Map<String, List<Future<Integer>>> mapResult = new HashMap<>();
         for (int i = 0; i < animalslist.size(); i++) {
@@ -70,7 +70,7 @@ public class Main {
         executorService.shutdown();
         String winner = "";
         String loser = "";
-        int min = getTotal(mapResult.get("Cánh cụt"));
+        int min = 300000;
         int max = 0;
         for (String s : mapResult.keySet()) {
             if(getTotal(mapResult.get(s))<min){
