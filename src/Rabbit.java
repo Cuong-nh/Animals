@@ -1,13 +1,15 @@
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 
-public class Rabbit implements Animals {
-    int distance, time;
-    int count;
-    int totalTime ;
+public class Rabbit extends  AbstractAnimals implements Animals,Runnable {
+    int distance, time,count,totalTime,length,number;
+    Runnable runnable;
+    ExecutorService executor;
 
 
-    public Rabbit(int length,int count) {
-
+    public Rabbit(int length,int count,int number) {
+        this.number = number;
+        this.length = length;
         this.distance = 40 + new Random().nextInt(5);
         this.time = 400 + new Random().nextInt(50);
         this.count=count;
@@ -33,28 +35,6 @@ public class Rabbit implements Animals {
     }
 
     @Override
-    public void go(int length) {
-
-        System.out.println("Thỏ "+ count + " bắt đầu chạy " );
-        int i =0,dis = 0,t=0;
-        do {
-            dis = dis+distance;
-            i++;
-            System.out.println("Thỏ "+ count + " chạy được " + dis+ " cm");
-            t = time*i;
-        }while (dis<length);
-        totalTime = t;
-        System.out.println("Thỏ "+count+" hoàn thành đường đua với thời gian " + this.getTotal()/1000 + " giây.");
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
     public int getTotal() {
         return this.totalTime;
     }
@@ -62,5 +42,22 @@ public class Rabbit implements Animals {
     @Override
     public String getType() {
         return "Thỏ";
+    }
+
+    @Override
+    public void run() {
+        super.start(this.getType(),number,distance,time,length,count,runnable,executor);
+
+    }
+    @Override
+    public void setRunnable(Runnable runnable) {
+        if(count<number){
+            this.runnable = runnable;}
+    }
+
+    @Override
+    public void setExecutor(ExecutorService executor) {
+        this.executor = executor;
+
     }
 }

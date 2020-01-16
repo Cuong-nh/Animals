@@ -1,21 +1,24 @@
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Tiger implements Animals {
-    int distance,time;
-    int count;
-    int totalTime ;
+public class Tiger extends AbstractAnimals implements Animals, Runnable {
+    int distance, time, length, count, totalTime,number;
+    Runnable runnable;
+    ExecutorService executor;
 
-    public Tiger(int length,int count) {
-
+    public Tiger(int length, int count,int number) {
+        this.length = length;
+        this.number = number;
         this.distance = 70 + new Random().nextInt(5);
         this.time = 700 + new Random().nextInt(50);
         this.count = count;
-        int i =0,dis = 0,t=0;
+        int i = 0, dis = 0, t = 0;
         do {
-            dis = dis+distance;
-            i++; t = time*i;
-        }while (dis<length);
+            dis = dis + distance;
+            i++;
+            t = time * i;
+        } while (dis < length);
         this.totalTime = t;
 
     }
@@ -33,29 +36,6 @@ public class Tiger implements Animals {
         return count;
     }
 
-    @Override
-    public void go(int length) {
-        System.out.println("Hổ "+ count + " bắt đầu chạy " );
-        int i =0,dis = 0,t=0;
-        do {
-            dis = dis+distance;
-            i++;
-            System.out.println("Hổ "+ count + " chạy được " + dis+ " cm");
-            t = time*i;
-        }while (dis<length);
-        totalTime = t;
-
-        System.out.println("Hổ "+count+" hoàn thành đường đua với thời gian " + this.getTotal()/1000 + " giây.");
-
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
     @Override
     public int getTotal() {
@@ -65,6 +45,25 @@ public class Tiger implements Animals {
     @Override
     public String getType() {
         return "Hổ";
+    }
+
+    @Override
+    public void setRunnable(Runnable runnable) {
+
+        if(count<number){
+            this.runnable = runnable;}
+    }
+
+    @Override
+    public void setExecutor(ExecutorService executor) {
+        this.executor = executor;
+
+    }
+
+    @Override
+    public void run() {
+        super.start(this.getType(), number,distance, time, length, count,runnable,executor);
+
     }
 }
 

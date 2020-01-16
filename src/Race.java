@@ -23,4 +23,6 @@ public class Race {
     public int getLength() {
         return length;
     }
+
+
 }

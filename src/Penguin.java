@@ -1,22 +1,25 @@
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Penguin implements Animals {
-    int distance, time;
-    int count;
-    int totalTime;
+public class Penguin extends AbstractAnimals implements Animals, Runnable {
+    int distance, time, count, totalTime, length,number;
+    Runnable runnable;
+    ExecutorService executor;
 
 
-    public Penguin(int length,int count) {
-
+    public Penguin(int length, int count,int number) {
+        this.length = length;
+        this.number = number;
         this.distance = 30 + new Random().nextInt(5);
         this.time = 300 + new Random().nextInt(50);
         this.count = count;
-        int i =0,dis = 0,t=0;
+        int i = 0, dis = 0, t = 0;
         do {
-            dis = dis+distance;
-            i++; t = time*i;
-        }while (dis<length);
+            dis = dis + distance;
+            i++;
+            t = time * i;
+        } while (dis < length);
         this.totalTime = t;
 
     }
@@ -33,28 +36,8 @@ public class Penguin implements Animals {
         return time;
     }
 
-
-    @Override
-    public void go(int length) {
-        System.out.println("Cánh cụt "+ count + " bắt đầu chạy " );
-        int i = 1,dis = 0,t =0;
-        do {
-            dis = dis + distance;
-            i++;
-            System.out.println("Cánh cụt "+ count + " chạy được " + dis+ " cm");
-            t = time * i;
-        } while (dis < length);
-        totalTime = t;
-        System.out.println("Cánh cụt "+count+" hoàn thành đường đua với thời gian " + this.getTotal()/1000 + " giây.");
-
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 
     @Override
@@ -67,4 +50,19 @@ public class Penguin implements Animals {
         return "Cánh cụt";
     }
 
+    @Override
+    public void setRunnable(Runnable runnable) {
+        if(count<number){
+        this.runnable = runnable;}
+    }
+
+    @Override
+    public void setExecutor(ExecutorService executor) {
+        this.executor = executor;
+    }
+    @Override
+    public void run() {
+        super.start(this.getType(), number,distance, time, length, count,runnable,executor);
+
+    }
 }
