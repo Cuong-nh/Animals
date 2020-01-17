@@ -18,11 +18,7 @@ public abstract class AbstractAnimals {
             } catch (Exception e) {
 
             }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
         }
     }
 }
